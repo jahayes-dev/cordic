@@ -1,8 +1,8 @@
 use fixed::types::extra::{
-    IsLessOrEqual, True, Unsigned, U13, U14, U16, U29, U30, U32, U5, U6, U61, U62, U64, U8,
+    IsLessOrEqual, True, Unsigned, U13, U14, U16, U29, U30, U32, U5, U6, U61, U62, U64, U8, U128, U126, U125,
 };
 use fixed::types::U0F64;
-use fixed::{FixedI16, FixedI32, FixedI64, FixedI8};
+use fixed::{FixedI16, FixedI32, FixedI64, FixedI8, FixedI128};
 use core::ops::{Add, AddAssign, Div, Mul, Neg, Shl, Shr, Sub, SubAssign};
 
 /// A number that can be used by the CORDIC-based algorithms.
@@ -253,5 +253,59 @@ where
     #[inline(always)]
     fn num_bits() -> u8 {
         64
+    }
+}
+
+impl<Fract> CordicNumber for FixedI128<Fract>
+where
+    Fract: 'static
+        + Unsigned
+        + IsLessOrEqual<U128, Output = True>
+        + IsLessOrEqual<U126, Output = True>
+        + IsLessOrEqual<U125, Output = True>,
+{
+    #[inline(always)]
+    fn floor(self) -> Self {
+        self.floor()
+    }
+
+    #[inline(always)]
+    fn zero() -> Self {
+        Self::from_bits(0)
+    }
+
+    #[inline(always)]
+    fn one() -> Self {
+        Self::from_num(1.0)
+    }
+
+    #[inline(always)]
+    fn frac_pi_2() -> Self {
+        Self::FRAC_PI_2
+    }
+
+    #[inline(always)]
+    fn pi() -> Self {
+        Self::PI
+    }
+
+    #[inline(always)]
+    fn e() -> Self {
+        Self::E
+    }
+
+    #[inline(always)]
+    fn from_u0f64(val: U0F64) -> Self {
+        val.to_num()
+    }
+
+    #[inline(always)]
+    fn num_fract_bits() -> u8 {
+        Fract::to_u8()
+    }
+
+    #[inline(always)]
+    fn num_bits() -> u8 {
+        128
     }
 }
